@@ -44,4 +44,24 @@ export interface ActivityLog {
   created_at: string
 }
 
-export type Page = 'overview' | 'tables' | 'query' | 'activity'
+export type Page = 'overview' | 'tables' | 'query' | 'activity' | 'figma'
+
+export interface FigmaProject {
+  id: string
+  name: string
+}
+
+export interface FigmaFile {
+  key: string
+  name: string
+  thumbnail_url: string
+  last_modified: string
+}
+
+export interface FigmaProjectsResponse {
+  projects: FigmaProject[]
+}
+
+export interface FigmaFilesResponse {
+  files: FigmaFile[]
+}

@@ -329,6 +329,56 @@ app.get('/api/activity', (req, res) => {
   }
 })
 
+// ─── Figma Routes ─────────────────────────────────────────────────────────────
+
+// List projects in a Figma team
+app.get('/api/figma/teams/:teamId/projects', async (req, res) => {
+  const { teamId } = req.params
+  const token = req.headers['x-figma-token']
+
+  if (!token) {
+    return res.status(401).json({ error: 'Missing X-Figma-Token header' })
+  }
+
+  try {
+    const response = await fetch(`https://api.figma.com/v1/teams/${teamId}/projects`, {
+      headers: { 'X-Figma-Token': token },
+    })
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}))
+      return res.status(response.status).json({ error: body.err || `Figma API error ${response.status}` })
+    }
+    const data = await response.json()
+    res.json(data)
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// List files in a Figma project
+app.get('/api/figma/projects/:projectId/files', async (req, res) => {
+  const { projectId } = req.params
+  const token = req.headers['x-figma-token']
+
+  if (!token) {
+    return res.status(401).json({ error: 'Missing X-Figma-Token header' })
+  }
+
+  try {
+    const response = await fetch(`https://api.figma.com/v1/projects/${projectId}/files`, {
+      headers: { 'X-Figma-Token': token },
+    })
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}))
+      return res.status(response.status).json({ error: body.err || `Figma API error ${response.status}` })
+    }
+    const data = await response.json()
+    res.json(data)
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
 app.listen(PORT, () => {
   console.log(`Database Dashboard API running on http://localhost:${PORT}`)
 })

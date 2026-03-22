@@ -4,6 +4,7 @@ import Overview from './pages/Overview'
 import Tables from './pages/Tables'
 import QueryEditor from './pages/QueryEditor'
 import ActivityLogPage from './pages/ActivityLog'
+import FigmaFiles from './pages/FigmaFiles'
 import { type Page } from './types'
 import { useApi } from './hooks/useApi'
 import { type TableInfo } from './types'
@@ -18,6 +19,7 @@ export default function App() {
       case 'tables': return <Tables />
       case 'query': return <QueryEditor />
       case 'activity': return <ActivityLogPage />
+      case 'figma': return <FigmaFiles />
     }
   }
 
