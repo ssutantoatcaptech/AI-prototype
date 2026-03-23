@@ -299,7 +299,7 @@ const pageTitle: Record<NavPage, string> = {
   claims:   'Claims',
 }
 
-export default function MoOPortal() {
+export default function MoOPortal({ onBack }: { onBack?: () => void }) {
   const [page, setPage] = useState<NavPage>('overview')
 
   return (
@@ -322,6 +322,9 @@ export default function MoOPortal() {
       }}>
         {/* Logo */}
         <div style={{ padding: '20px 16px', borderBottom: `1px solid ${tokens.border}`, display: 'flex', alignItems: 'center', gap: 10 }}>
+          {onBack && (
+            <button onClick={onBack} style={{ background: 'none', border: 'none', color: tokens.text.secondary, cursor: 'pointer', fontSize: 16, padding: 0, marginRight: 2 }}>←</button>
+          )}
           <div style={{ width: 32, height: 32, borderRadius: 8, background: tokens.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 14, color: '#fff' }}>M</div>
           <span style={{ fontWeight: 700, fontSize: 15, color: tokens.text.primary }}>MoO Portal</span>
         </div>
@@ -355,6 +358,29 @@ export default function MoOPortal() {
             </button>
           ))}
         </nav>
+
+        {/* Export tokens */}
+        <div style={{ padding: '12px 16px', borderTop: `1px solid ${tokens.border}` }}>
+          <a
+            href="/moo-tokens.json"
+            download="moo-tokens.json"
+            onClick={e => {
+              e.preventDefault()
+              fetch('/src/tokens/moo-tokens.json')
+                .then(r => r.blob())
+                .then(blob => {
+                  const url = URL.createObjectURL(blob)
+                  const a = document.createElement('a')
+                  a.href = url
+                  a.download = 'moo-tokens.json'
+                  a.click()
+                })
+            }}
+            style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: tokens.text.secondary, textDecoration: 'none', padding: '6px 4px', borderRadius: 6 }}
+          >
+            <span>↓</span> Export Design Tokens
+          </a>
+        </div>
 
         {/* User */}
         <div style={{ padding: 16, borderTop: `1px solid ${tokens.border}`, display: 'flex', alignItems: 'center', gap: 10 }}>

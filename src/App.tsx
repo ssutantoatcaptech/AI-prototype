@@ -27,6 +27,10 @@ export default function App() {
     }
   }
 
+  if (page === 'moo') {
+    return <MoOPortal onBack={() => setPage('overview')} />
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-950">
       <Sidebar

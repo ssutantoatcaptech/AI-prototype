@@ -1,0 +1,273 @@
+{
+  "color": {
+    "primary": {
+      "main": {
+        "$value": "#0055A4",
+        "$type": "color",
+        "$description": "Primary brand blue — used for buttons, links, and active states"
+      }
+    },
+    "background": {
+      "navy": {
+        "$value": "#0A1128",
+        "$type": "color",
+        "$description": "Darkest background — main app shell"
+      },
+      "slate": {
+        "$value": "#101820",
+        "$type": "color",
+        "$description": "Secondary background — main content area"
+      }
+    },
+    "text": {
+      "primary": {
+        "$value": "#F8FAFC",
+        "$type": "color",
+        "$description": "Primary text — headings and body"
+      },
+      "secondary": {
+        "$value": "#64748B",
+        "$type": "color",
+        "$description": "Secondary text — labels, captions, hints"
+      }
+    },
+    "status": {
+      "success": {
+        "$value": "#108981",
+        "$type": "color",
+        "$description": "Active benefits, successful claims, positive trends"
+      },
+      "warning": {
+        "$value": "#F59E0B",
+        "$type": "color",
+        "$description": "Pending claims, expiring benefits, required actions"
+      },
+      "error": {
+        "$value": "#EF4444",
+        "$type": "color",
+        "$description": "Denied claims, errors, destructive actions"
+      },
+      "inactive": {
+        "$value": "#64748B",
+        "$type": "color",
+        "$description": "Inactive or historic items"
+      }
+    },
+    "surface": {
+      "card": {
+        "$value": "rgba(255, 255, 255, 0.05)",
+        "$type": "color",
+        "$description": "Base card layer — 15% opacity + 16px blur"
+      },
+      "hover": {
+        "$value": "rgba(255, 255, 255, 0.10)",
+        "$type": "color",
+        "$description": "Elevated hover/active layer — 20% opacity + 20px blur"
+      },
+      "nav": {
+        "$value": "rgba(10, 17, 40, 0.80)",
+        "$type": "color",
+        "$description": "Navigation sidebar — 80% opacity + 30px blur"
+      }
+    },
+    "border": {
+      "default": {
+        "$value": "rgba(255, 255, 255, 0.08)",
+        "$type": "color",
+        "$description": "Ultra-thin default border — defines card edges without visual weight"
+      },
+      "focus": {
+        "$value": "rgba(0, 85, 164, 0.50)",
+        "$type": "color",
+        "$description": "Focus / active border — used for inputs and active states"
+      }
+    }
+  },
+  "typography": {
+    "fontFamily": {
+      "primary": {
+        "$value": "Inter",
+        "$type": "fontFamily",
+        "$description": "Primary sans-serif for all UI elements"
+      }
+    },
+    "fontSize": {
+      "4xl": {
+        "$value": "36px",
+        "$type": "dimension",
+        "$description": "Page title / H1"
+      },
+      "2xl": {
+        "$value": "24px",
+        "$type": "dimension",
+        "$description": "Section heading / H2"
+      },
+      "lg": {
+        "$value": "18px",
+        "$type": "dimension",
+        "$description": "Card title / H3"
+      },
+      "base": {
+        "$value": "16px",
+        "$type": "dimension",
+        "$description": "Body text"
+      },
+      "sm": {
+        "$value": "14px",
+        "$type": "dimension",
+        "$description": "Secondary text, labels"
+      },
+      "xs": {
+        "$value": "12px",
+        "$type": "dimension",
+        "$description": "Metadata, overline, captions"
+      },
+      "2xs": {
+        "$value": "11px",
+        "$type": "dimension",
+        "$description": "Badges, tags, micro labels"
+      }
+    },
+    "fontWeight": {
+      "regular": {
+        "$value": 400,
+        "$type": "fontWeight",
+        "$description": "Body text"
+      },
+      "medium": {
+        "$value": 500,
+        "$type": "fontWeight",
+        "$description": "Labels, buttons"
+      },
+      "semibold": {
+        "$value": 600,
+        "$type": "fontWeight",
+        "$description": "Section headings, card titles"
+      },
+      "bold": {
+        "$value": 700,
+        "$type": "fontWeight",
+        "$description": "Page titles, key values"
+      }
+    },
+    "lineHeight": {
+      "tight": {
+        "$value": "40px",
+        "$type": "dimension",
+        "$description": "H1 line height"
+      },
+      "snug": {
+        "$value": "32px",
+        "$type": "dimension",
+        "$description": "H2 line height"
+      },
+      "normal": {
+        "$value": "28px",
+        "$type": "dimension",
+        "$description": "H3 line height"
+      },
+      "relaxed": {
+        "$value": "24px",
+        "$type": "dimension",
+        "$description": "Body line height"
+      },
+      "loose": {
+        "$value": "20px",
+        "$type": "dimension",
+        "$description": "Small text line height"
+      }
+    }
+  },
+  "spacing": {
+    "1": {
+      "$value": "4px",
+      "$type": "dimension",
+      "$description": "space.1 — extra tight"
+    },
+    "2": {
+      "$value": "8px",
+      "$type": "dimension",
+      "$description": "space.2 — tight"
+    },
+    "3": {
+      "$value": "12px",
+      "$type": "dimension",
+      "$description": "space.3 — compact"
+    },
+    "4": {
+      "$value": "16px",
+      "$type": "dimension",
+      "$description": "space.4 — base"
+    },
+    "6": {
+      "$value": "24px",
+      "$type": "dimension",
+      "$description": "space.6 — comfortable"
+    },
+    "8": {
+      "$value": "32px",
+      "$type": "dimension",
+      "$description": "space.8 — spacious"
+    },
+    "12": {
+      "$value": "48px",
+      "$type": "dimension",
+      "$description": "space.12 — section gap"
+    }
+  },
+  "borderRadius": {
+    "sm": {
+      "$value": "4px",
+      "$type": "dimension",
+      "$description": "Small — badges, tags"
+    },
+    "md": {
+      "$value": "8px",
+      "$type": "dimension",
+      "$description": "Medium — buttons, inputs"
+    },
+    "lg": {
+      "$value": "12px",
+      "$type": "dimension",
+      "$description": "Large — cards"
+    },
+    "xl": {
+      "$value": "16px",
+      "$type": "dimension",
+      "$description": "Extra large — modals, drawers"
+    },
+    "full": {
+      "$value": "9999px",
+      "$type": "dimension",
+      "$description": "Full — pills, avatars"
+    }
+  },
+  "component": {
+    "button": {
+      "height": {
+        "sm": { "$value": "32px", "$type": "dimension" },
+        "md": { "$value": "40px", "$type": "dimension" },
+        "lg": { "$value": "48px", "$type": "dimension" }
+      },
+      "paddingX": {
+        "sm": { "$value": "12px", "$type": "dimension" },
+        "md": { "$value": "16px", "$type": "dimension" },
+        "lg": { "$value": "24px", "$type": "dimension" }
+      },
+      "borderRadius": { "$value": "8px", "$type": "dimension" },
+      "fontWeight": { "$value": 500, "$type": "fontWeight" }
+    },
+    "input": {
+      "height": { "$value": "40px", "$type": "dimension" },
+      "paddingX": { "$value": "12px", "$type": "dimension" },
+      "borderRadius": { "$value": "8px", "$type": "dimension" },
+      "borderWidth": { "$value": "1px", "$type": "dimension" }
+    },
+    "card": {
+      "padding": { "$value": "24px", "$type": "dimension" },
+      "borderRadius": { "$value": "12px", "$type": "dimension" },
+      "borderWidth": { "$value": "1px", "$type": "dimension" },
+      "backdropBlur": { "$value": "16px", "$type": "dimension" }
+    }
+  }
+}
