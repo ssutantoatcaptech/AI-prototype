@@ -1,8 +1,5 @@
 import { useState } from 'react'
-import Button from '../../components/Button'
-import Input from '../../components/Input'
-import PortalHeader from '../../components/PortalHeader'
-import ProgressDots from '../../components/ProgressDots'
+import { WireframeBrand, WireframeSteps, WireframeFooter, WireframeLabel, WireframeInput, WireframeButton } from '../../components/WireframeCard'
 import type { NavProps, RegistrationData } from '../../types'
 
 interface Props extends NavProps {
@@ -10,7 +7,7 @@ interface Props extends NavProps {
   setData: (d: Partial<RegistrationData>) => void
 }
 
-const requirements = [
+const reqs = [
   { label: 'At least 8 characters', test: (p: string) => p.length >= 8 },
   { label: 'One uppercase letter', test: (p: string) => /[A-Z]/.test(p) },
   { label: 'One lowercase letter', test: (p: string) => /[a-z]/.test(p) },
@@ -20,6 +17,7 @@ const requirements = [
 
 export default function CreateLogin({ navigate, data, setData }: Props) {
   const [confirm, setConfirm] = useState('')
+  const [showPw, setShowPw] = useState(false)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -27,76 +25,85 @@ export default function CreateLogin({ navigate, data, setData }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-sm p-6">
-        <PortalHeader />
-        <div className="flex items-center justify-between mb-4">
-          <ProgressDots steps={4} current={1} />
-          <span className="text-xs text-gray-400">Step 2 of 4</span>
-        </div>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
+      <div className="w-full max-w-[380px] bg-white border border-gray-300 rounded-sm">
+        <WireframeBrand />
+        <WireframeSteps current={1} total={4} />
 
-        <h1 className="text-xl font-bold text-gray-900 mb-1">Create Your Login</h1>
-        <p className="text-sm text-gray-500 mb-5">Set up your email and password to access the portal.</p>
+        <div className="px-5 py-5">
+          <h1 className="text-[20px] font-bold text-gray-900 mb-1">Create Your Login</h1>
+          <p className="text-sm text-gray-500 mb-5">Set up your email and password to access the portal.</p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            label="Email Address"
-            type="email"
-            placeholder="you@example.com"
-            value={data.email}
-            onChange={e => setData({ email: e.target.value })}
-            required
-          />
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <WireframeLabel>Email Address *</WireframeLabel>
+              <WireframeInput
+                type="email"
+                placeholder="email@example.com"
+                value={data.email}
+                onChange={e => setData({ email: e.target.value })}
+                required
+              />
+            </div>
 
-          <div>
-            <Input
-              label="Set Your Password"
-              type="password"
-              placeholder="••••••••"
-              value={data.password}
-              onChange={e => setData({ password: e.target.value })}
-              required
-            />
-            <ul className="mt-2 space-y-1">
-              {requirements.map(r => (
-                <li key={r.label} className={`flex items-center gap-1.5 text-xs ${r.test(data.password) ? 'text-green-600' : 'text-gray-400'}`}>
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    {r.test(data.password)
-                      ? <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      : <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                    }
-                  </svg>
-                  {r.label}
-                </li>
-              ))}
-            </ul>
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <WireframeLabel>Set Your Password *</WireframeLabel>
+                <button type="button" onClick={() => setShowPw(v => !v)} className="text-xs text-gray-500 underline">
+                  {showPw ? 'Hide' : 'Show'}
+                </button>
+              </div>
+              <WireframeInput
+                type={showPw ? 'text' : 'password'}
+                placeholder="Password"
+                value={data.password}
+                onChange={e => setData({ password: e.target.value })}
+                required
+              />
+              {/* Requirements */}
+              <ul className="mt-2 grid grid-cols-1 gap-y-1">
+                {reqs.map(r => (
+                  <li key={r.label} className={`flex items-center gap-1.5 text-xs ${r.test(data.password) ? 'text-gray-800' : 'text-gray-400'}`}>
+                    <span className="w-3 text-center">{r.test(data.password) ? '✓' : '○'}</span>
+                    {r.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <WireframeLabel>Confirm Password *</WireframeLabel>
+              <WireframeInput
+                type="password"
+                placeholder="Confirm password"
+                value={confirm}
+                onChange={e => setConfirm(e.target.value)}
+                required
+              />
+              {confirm && confirm !== data.password && (
+                <p className="text-xs text-red-500 mt-1">Passwords do not match</p>
+              )}
+            </div>
+
+            <WireframeButton type="submit">Continue to Profile →</WireframeButton>
+            <button
+              type="button"
+              onClick={() => navigate('register-verify')}
+              className="w-full py-2 text-sm text-gray-500 hover:text-gray-800 border border-gray-300 rounded-sm bg-white"
+            >
+              ← Back
+            </button>
+          </form>
+
+          <div className="mt-4 text-center">
+            <span className="text-xs text-gray-400">Need help? </span>
+            <a href="#" className="text-xs text-gray-600 underline hover:text-gray-900">Contact Support</a>
           </div>
-
-          <Input
-            label="Confirm Password"
-            type="password"
-            placeholder="••••••••"
-            value={confirm}
-            onChange={e => setConfirm(e.target.value)}
-            error={confirm && confirm !== data.password ? 'Passwords do not match' : undefined}
-            required
-          />
-
-          <Button type="submit" fullWidth>Continue to Profile →</Button>
-          <button type="button" onClick={() => navigate('register-verify')} className="w-full text-sm text-gray-500 hover:text-black">← Back</button>
-        </form>
-
-        <div className="mt-4 text-center text-xs text-gray-400">
-          Need help?{' '}
-          <a href="#" className="underline hover:text-gray-600">Contact Support</a>
         </div>
 
-        <footer className="mt-6 pt-4 border-t border-gray-100 flex justify-center gap-4 text-xs text-gray-400">
-          <a href="#" className="hover:text-gray-600">Privacy Policy</a>
-          <a href="#" className="hover:text-gray-600">Terms of Service</a>
-          <a href="#" className="hover:text-gray-600">Accessibility</a>
-        </footer>
+        <WireframeFooter />
       </div>
+      <p className="mt-4 text-xs text-gray-400">© 2025 Member Benefits Portal</p>
     </div>
   )
 }

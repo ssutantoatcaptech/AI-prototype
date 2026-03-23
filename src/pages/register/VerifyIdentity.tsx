@@ -1,8 +1,4 @@
-import { useState } from 'react'
-import Button from '../../components/Button'
-import Input from '../../components/Input'
-import PortalHeader from '../../components/PortalHeader'
-import ProgressDots from '../../components/ProgressDots'
+import WireframeCard, { WireframeBrand, WireframeSteps, WireframeFooter, WireframeLabel, WireframeInput, WireframeButton } from '../../components/WireframeCard'
 import type { NavProps, RegistrationData } from '../../types'
 
 interface Props extends NavProps {
@@ -17,94 +13,113 @@ export default function VerifyIdentity({ navigate, data, setData }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-sm p-6">
-        <PortalHeader />
-        <div className="flex items-center justify-between mb-4">
-          <ProgressDots steps={4} current={0} />
-          <span className="text-xs text-gray-400">Step 1 of 4</span>
-        </div>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
+      <div className="w-full max-w-[380px] bg-white border border-gray-300 rounded-sm">
+        <WireframeBrand />
+        <WireframeSteps current={0} total={4} />
 
-        <h1 className="text-xl font-bold text-gray-900 mb-1">Verify Your Identity</h1>
-        <p className="text-sm text-gray-500 mb-5">Please provide your information so we can verify your eligibility.</p>
+        <div className="px-5 py-5">
+          <h1 className="text-[20px] font-bold text-gray-900 mb-1">Verify Your Identity</h1>
+          <p className="text-sm text-gray-500 mb-5">Provide your information to verify eligibility for your benefit plan.</p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Personal Information</h2>
-            <div className="space-y-3">
-              <div className="grid grid-cols-2 gap-3">
-                <Input
-                  label="First Name"
-                  placeholder="Jane"
-                  value={data.firstName}
-                  onChange={e => setData({ firstName: e.target.value })}
-                  required
-                />
-                <Input
-                  label="Last Name"
-                  placeholder="Smith"
-                  value={data.lastName}
-                  onChange={e => setData({ lastName: e.target.value })}
-                  required
-                />
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Personal Info */}
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Personal Information</span>
+                <div className="flex-1 h-px bg-gray-200" />
               </div>
-              <Input
-                label="Date of Birth *"
-                type="date"
-                value={data.dateOfBirth}
-                onChange={e => setData({ dateOfBirth: e.target.value })}
-                required
-              />
-              <Input
-                label="Last 4 of SSN *"
-                placeholder="••••"
-                maxLength={4}
-                value={data.last4SSN}
-                onChange={e => setData({ last4SSN: e.target.value.replace(/\D/g, '') })}
-                required
-              />
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <WireframeLabel>First Name *</WireframeLabel>
+                    <WireframeInput
+                      placeholder="First name"
+                      value={data.firstName}
+                      onChange={e => setData({ firstName: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <WireframeLabel>Last Name *</WireframeLabel>
+                    <WireframeInput
+                      placeholder="Last name"
+                      value={data.lastName}
+                      onChange={e => setData({ lastName: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <WireframeLabel>Date of Birth *</WireframeLabel>
+                  <WireframeInput
+                    type="date"
+                    value={data.dateOfBirth}
+                    onChange={e => setData({ dateOfBirth: e.target.value })}
+                    required
+                  />
+                </div>
+                <div>
+                  <WireframeLabel>Last 4 digits of SSN *</WireframeLabel>
+                  <WireframeInput
+                    placeholder="••••"
+                    maxLength={4}
+                    value={data.last4SSN}
+                    onChange={e => setData({ last4SSN: e.target.value.replace(/\D/g, '') })}
+                    required
+                  />
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div>
-            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Employment Information</h2>
-            <div className="space-y-3">
-              <Input
-                label="Employer Name"
-                placeholder="Acme Corporation"
-                value={data.employerName}
-                onChange={e => setData({ employerName: e.target.value })}
-                required
-              />
-              <Input
-                label="Employee ID"
-                placeholder="EMP-12345"
-                value={data.employeeId}
-                onChange={e => setData({ employeeId: e.target.value })}
-                required
-              />
+            {/* Employment */}
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Employment Information</span>
+                <div className="flex-1 h-px bg-gray-200" />
+              </div>
+              <div className="space-y-3">
+                <div>
+                  <WireframeLabel>Employer Name</WireframeLabel>
+                  <WireframeInput
+                    placeholder="Your employer"
+                    value={data.employerName}
+                    onChange={e => setData({ employerName: e.target.value })}
+                    required
+                  />
+                </div>
+                <div>
+                  <WireframeLabel>Employee ID</WireframeLabel>
+                  <WireframeInput
+                    placeholder="EMP-XXXXX"
+                    value={data.employeeId}
+                    onChange={e => setData({ employeeId: e.target.value })}
+                    required
+                  />
+                </div>
+              </div>
             </div>
+
+            {/* Certification */}
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" required className="mt-0.5 w-4 h-4 border border-gray-400 accent-gray-800 flex-shrink-0" />
+              <span className="text-xs text-gray-600 leading-relaxed">
+                I certify that the information provided is accurate and complete, and that I am eligible for this benefit plan.
+              </span>
+            </label>
+
+            <WireframeButton type="submit">Continue →</WireframeButton>
+          </form>
+
+          <div className="mt-4 text-center">
+            <span className="text-xs text-gray-400">Need help? </span>
+            <a href="#" className="text-xs text-gray-600 underline hover:text-gray-900">Contact Support</a>
           </div>
-
-          <label className="flex items-start gap-3 text-sm text-gray-600 cursor-pointer">
-            <input type="checkbox" required className="mt-0.5 rounded border-gray-300 flex-shrink-0" />
-            <span>I certify that the information provided is accurate and I am eligible for this benefit plan.</span>
-          </label>
-
-          <Button type="submit" fullWidth>Continue →</Button>
-        </form>
-
-        <div className="mt-4 text-center text-xs text-gray-400">
-          Need help?{' '}
-          <a href="#" className="underline hover:text-gray-600">Contact Support</a>
         </div>
 
-        <footer className="mt-6 pt-4 border-t border-gray-100 flex justify-center gap-4 text-xs text-gray-400">
-          <a href="#" className="hover:text-gray-600">Privacy Policy</a>
-          <a href="#" className="hover:text-gray-600">Terms of Service</a>
-          <a href="#" className="hover:text-gray-600">Accessibility</a>
-        </footer>
+        <WireframeFooter />
       </div>
+      <p className="mt-4 text-xs text-gray-400">© 2025 Member Benefits Portal</p>
     </div>
   )
 }
