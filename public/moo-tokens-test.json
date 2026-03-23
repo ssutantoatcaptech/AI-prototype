@@ -1,0 +1,26 @@
+{
+  "collections": [
+    {
+      "name": "Colors",
+      "modes": [{ "modeId": "1:0", "name": "Default" }],
+      "variables": [
+        {
+          "id": "1:1",
+          "name": "primary/main",
+          "resolvedType": "COLOR",
+          "valuesByMode": {
+            "1:0": { "r": 0, "g": 0.333, "b": 0.643, "a": 1 }
+          }
+        },
+        {
+          "id": "1:2",
+          "name": "status/success",
+          "resolvedType": "COLOR",
+          "valuesByMode": {
+            "1:0": { "r": 0.063, "g": 0.537, "b": 0.506, "a": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

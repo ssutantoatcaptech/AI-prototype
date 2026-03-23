@@ -285,6 +285,95 @@ function ClaimsPage() {
   )
 }
 
+// ── Figma Sync Panel ─────────────────────────────────────────────────────────
+
+function FigmaSyncPanel() {
+  const [token, setToken] = useState('')
+  const [fileId, setFileId] = useState('npNBYNKgovYYmgK2kpALrI')
+  const [status, setStatus] = useState<'idle' | 'pushing' | 'success' | 'error'>('idle')
+  const [message, setMessage] = useState('')
+  const [open, setOpen] = useState(false)
+
+  async function pushToFigma() {
+    if (!token || !fileId) return
+    setStatus('pushing')
+    setMessage('')
+    try {
+      const res = await fetch('http://localhost:3001/api/figma/push-variables', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Figma-Token': token },
+        body: JSON.stringify({ fileId }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed')
+      setStatus('success')
+      setMessage(data.message)
+    } catch (err) {
+      setStatus('error')
+      setMessage(err instanceof Error ? err.message : 'Unknown error')
+    }
+  }
+
+  return (
+    <div style={{ borderTop: `1px solid ${tokens.border}` }}>
+      <button onClick={() => setOpen(o => !o)} style={{
+        width: '100%', background: 'none', border: 'none', cursor: 'pointer',
+        padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        color: tokens.text.secondary, fontSize: 12, fontFamily: 'Inter, sans-serif',
+      }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span>✦</span> Figma Sync
+        </span>
+        <span>{open ? '⌃' : '⌄'}</span>
+      </button>
+
+      {open && (
+        <div style={{ padding: '0 16px 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <input
+            type="password"
+            placeholder="Figma token (figd_...)"
+            value={token}
+            onChange={e => setToken(e.target.value)}
+            style={{
+              background: tokens.surface.card, border: `1px solid ${tokens.border}`,
+              borderRadius: 6, padding: '6px 10px', fontSize: 11,
+              color: tokens.text.primary, fontFamily: 'Inter, sans-serif', width: '100%', boxSizing: 'border-box',
+            }}
+          />
+          <input
+            type="text"
+            placeholder="File ID"
+            value={fileId}
+            onChange={e => setFileId(e.target.value)}
+            style={{
+              background: tokens.surface.card, border: `1px solid ${tokens.border}`,
+              borderRadius: 6, padding: '6px 10px', fontSize: 11,
+              color: tokens.text.primary, fontFamily: 'Inter, sans-serif', width: '100%', boxSizing: 'border-box',
+            }}
+          />
+          <button onClick={pushToFigma} disabled={!token || !fileId || status === 'pushing'} style={{
+            background: status === 'success' ? tokens.status.success : tokens.primary,
+            border: 'none', borderRadius: 6, padding: '7px 12px', fontSize: 11,
+            color: '#fff', fontFamily: 'Inter, sans-serif', cursor: 'pointer',
+            opacity: (!token || !fileId || status === 'pushing') ? 0.5 : 1,
+          }}>
+            {status === 'pushing' ? 'Pushing...' : status === 'success' ? '✓ Pushed!' : '↑ Push Variables to Figma'}
+          </button>
+          {message && (
+            <div style={{ fontSize: 10, color: status === 'error' ? tokens.status.error : tokens.status.success, lineHeight: 1.4 }}>
+              {message}
+            </div>
+          )}
+          <div style={{ display: 'flex', gap: 6 }}>
+            <a href="/moo-tokens.json" download style={{ flex: 1, textAlign: 'center', fontSize: 10, color: tokens.text.secondary, textDecoration: 'none', padding: '5px', background: tokens.surface.card, border: `1px solid ${tokens.border}`, borderRadius: 6 }}>↓ Tokens</a>
+            <a href="/moo-styles.json" download style={{ flex: 1, textAlign: 'center', fontSize: 10, color: tokens.text.secondary, textDecoration: 'none', padding: '5px', background: tokens.surface.card, border: `1px solid ${tokens.border}`, borderRadius: 6 }}>↓ Styles</a>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ── Main Portal ──────────────────────────────────────────────────────────────
 
 const navItems = [
@@ -359,28 +448,8 @@ export default function MoOPortal({ onBack }: { onBack?: () => void }) {
           ))}
         </nav>
 
-        {/* Export tokens */}
-        <div style={{ padding: '12px 16px', borderTop: `1px solid ${tokens.border}` }}>
-          <a
-            href="/moo-tokens.json"
-            download="moo-tokens.json"
-            onClick={e => {
-              e.preventDefault()
-              fetch('/src/tokens/moo-tokens.json')
-                .then(r => r.blob())
-                .then(blob => {
-                  const url = URL.createObjectURL(blob)
-                  const a = document.createElement('a')
-                  a.href = url
-                  a.download = 'moo-tokens.json'
-                  a.click()
-                })
-            }}
-            style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: tokens.text.secondary, textDecoration: 'none', padding: '6px 4px', borderRadius: 6 }}
-          >
-            <span>↓</span> Export Design Tokens
-          </a>
-        </div>
+        {/* Figma sync */}
+        <FigmaSyncPanel />
 
         {/* User */}
         <div style={{ padding: 16, borderTop: `1px solid ${tokens.border}`, display: 'flex', alignItems: 'center', gap: 10 }}>

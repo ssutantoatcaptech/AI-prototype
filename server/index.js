@@ -379,6 +379,154 @@ app.get('/api/figma/projects/:projectId/files', async (req, res) => {
   }
 })
 
+// Push variables to Figma file via Variables API
+app.post('/api/figma/push-variables', async (req, res) => {
+  const token = req.headers['x-figma-token']
+  const { fileId } = req.body
+
+  if (!token) return res.status(401).json({ error: 'Missing X-Figma-Token header' })
+  if (!fileId) return res.status(400).json({ error: 'Missing fileId in request body' })
+
+  // Build Figma Variables API payload from MoO tokens
+  const collections = [
+    { action: 'CREATE', id: 'col-colors',       name: 'Colors' },
+    { action: 'CREATE', id: 'col-typography',   name: 'Typography' },
+    { action: 'CREATE', id: 'col-spacing',      name: 'Spacing' },
+    { action: 'CREATE', id: 'col-radius',       name: 'Border Radius' },
+    { action: 'CREATE', id: 'col-components',   name: 'Components' },
+  ]
+
+  const modes = [
+    { action: 'CREATE', id: 'mode-colors',      name: 'Default', variableCollectionId: 'col-colors' },
+    { action: 'CREATE', id: 'mode-typography',  name: 'Default', variableCollectionId: 'col-typography' },
+    { action: 'CREATE', id: 'mode-spacing',     name: 'Default', variableCollectionId: 'col-spacing' },
+    { action: 'CREATE', id: 'mode-radius',      name: 'Default', variableCollectionId: 'col-radius' },
+    { action: 'CREATE', id: 'mode-components',  name: 'Default', variableCollectionId: 'col-components' },
+  ]
+
+  function hexToRgb(hex) {
+    const h = hex.replace('#', '')
+    const hasAlpha = h.length === 8
+    return {
+      r: parseInt(h.substring(0, 2), 16) / 255,
+      g: parseInt(h.substring(2, 4), 16) / 255,
+      b: parseInt(h.substring(4, 6), 16) / 255,
+      a: hasAlpha ? parseInt(h.substring(6, 8), 16) / 255 : 1,
+    }
+  }
+
+  const colorVars = [
+    { name: 'primary/main',      hex: '#0055A4' },
+    { name: 'background/navy',   hex: '#0A1128' },
+    { name: 'background/slate',  hex: '#101820' },
+    { name: 'text/primary',      hex: '#F8FAFC' },
+    { name: 'text/secondary',    hex: '#64748B' },
+    { name: 'status/success',    hex: '#108981' },
+    { name: 'status/warning',    hex: '#F59E0B' },
+    { name: 'status/error',      hex: '#EF4444' },
+    { name: 'status/inactive',   hex: '#64748B' },
+    { name: 'border/default',    hex: '#FFFFFF14' },
+    { name: 'border/focus',      hex: '#0055A480' },
+    { name: 'surface/card',      hex: '#FFFFFF0D' },
+    { name: 'surface/hover',     hex: '#FFFFFF1A' },
+    { name: 'surface/nav',       hex: '#0A1128CC' },
+  ]
+
+  const typographyVars = [
+    { name: 'fontFamily/primary',   value: 'Inter',    type: 'STRING' },
+    { name: 'fontWeight/regular',   value: 400,        type: 'FLOAT' },
+    { name: 'fontWeight/medium',    value: 500,        type: 'FLOAT' },
+    { name: 'fontWeight/semibold',  value: 600,        type: 'FLOAT' },
+    { name: 'fontWeight/bold',      value: 700,        type: 'FLOAT' },
+    { name: 'fontSize/4xl',         value: 36,         type: 'FLOAT' },
+    { name: 'fontSize/2xl',         value: 24,         type: 'FLOAT' },
+    { name: 'fontSize/lg',          value: 18,         type: 'FLOAT' },
+    { name: 'fontSize/base',        value: 16,         type: 'FLOAT' },
+    { name: 'fontSize/sm',          value: 14,         type: 'FLOAT' },
+    { name: 'fontSize/xs',          value: 12,         type: 'FLOAT' },
+    { name: 'lineHeight/tight',     value: 40,         type: 'FLOAT' },
+    { name: 'lineHeight/normal',    value: 28,         type: 'FLOAT' },
+    { name: 'lineHeight/relaxed',   value: 24,         type: 'FLOAT' },
+  ]
+
+  const spacingVars = [1,2,3,4,6,8,12].map((n, i) => ({
+    name: `spacing/${n}`,
+    value: [4,8,12,16,24,32,48][i],
+    type: 'FLOAT',
+  }))
+
+  const radiusVars = [
+    { name: 'radius/sm',   value: 4,    type: 'FLOAT' },
+    { name: 'radius/md',   value: 8,    type: 'FLOAT' },
+    { name: 'radius/lg',   value: 12,   type: 'FLOAT' },
+    { name: 'radius/xl',   value: 16,   type: 'FLOAT' },
+    { name: 'radius/full', value: 9999, type: 'FLOAT' },
+  ]
+
+  const componentVars = [
+    { name: 'button/height-sm', value: 32, type: 'FLOAT' },
+    { name: 'button/height-md', value: 40, type: 'FLOAT' },
+    { name: 'button/height-lg', value: 48, type: 'FLOAT' },
+    { name: 'input/height',     value: 40, type: 'FLOAT' },
+    { name: 'card/padding',     value: 24, type: 'FLOAT' },
+    { name: 'card/radius',      value: 12, type: 'FLOAT' },
+  ]
+
+  const variables = [
+    ...colorVars.map((v, i) => ({
+      action: 'CREATE', id: `var-color-${i}`, name: v.name,
+      resolvedType: 'COLOR', variableCollectionId: 'col-colors',
+    })),
+    ...typographyVars.map((v, i) => ({
+      action: 'CREATE', id: `var-typo-${i}`, name: v.name,
+      resolvedType: v.type, variableCollectionId: 'col-typography',
+    })),
+    ...spacingVars.map((v, i) => ({
+      action: 'CREATE', id: `var-space-${i}`, name: v.name,
+      resolvedType: 'FLOAT', variableCollectionId: 'col-spacing',
+    })),
+    ...radiusVars.map((v, i) => ({
+      action: 'CREATE', id: `var-radius-${i}`, name: v.name,
+      resolvedType: 'FLOAT', variableCollectionId: 'col-radius',
+    })),
+    ...componentVars.map((v, i) => ({
+      action: 'CREATE', id: `var-comp-${i}`, name: v.name,
+      resolvedType: 'FLOAT', variableCollectionId: 'col-components',
+    })),
+  ]
+
+  const variableModeValues = [
+    ...colorVars.map((v, i) => ({
+      variableId: `var-color-${i}`, modeId: 'mode-colors', value: hexToRgb(v.hex),
+    })),
+    ...typographyVars.map((v, i) => ({
+      variableId: `var-typo-${i}`, modeId: 'mode-typography', value: v.value,
+    })),
+    ...spacingVars.map((v, i) => ({
+      variableId: `var-space-${i}`, modeId: 'mode-spacing', value: v.value,
+    })),
+    ...radiusVars.map((v, i) => ({
+      variableId: `var-radius-${i}`, modeId: 'mode-radius', value: v.value,
+    })),
+    ...componentVars.map((v, i) => ({
+      variableId: `var-comp-${i}`, modeId: 'mode-components', value: v.value,
+    })),
+  ]
+
+  try {
+    const response = await fetch(`https://api.figma.com/v1/files/${fileId}/variables`, {
+      method: 'POST',
+      headers: { 'X-Figma-Token': token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ variableCollections: collections, variableModes: modes, variables, variableModeValues }),
+    })
+    const data = await response.json()
+    if (!response.ok) return res.status(response.status).json({ error: data.err || data.message || 'Figma API error' })
+    res.json({ success: true, message: `Pushed ${variables.length} variables across ${collections.length} collections` })
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
 app.listen(PORT, () => {
   console.log(`Database Dashboard API running on http://localhost:${PORT}`)
 })

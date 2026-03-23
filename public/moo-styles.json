@@ -1,0 +1,33 @@
+{
+  "colorStyles": [
+    { "name": "Primary/Main",       "color": "#0055A4", "description": "Primary brand blue" },
+    { "name": "Background/Navy",    "color": "#0A1128", "description": "Main app shell" },
+    { "name": "Background/Slate",   "color": "#101820", "description": "Main content area" },
+    { "name": "Text/Primary",       "color": "#F8FAFC", "description": "Headings and body" },
+    { "name": "Text/Secondary",     "color": "#64748B", "description": "Labels, captions" },
+    { "name": "Status/Success",     "color": "#108981", "description": "Active, approved" },
+    { "name": "Status/Warning",     "color": "#F59E0B", "description": "Pending, required" },
+    { "name": "Status/Error",       "color": "#EF4444", "description": "Denied, errors" },
+    { "name": "Status/Inactive",    "color": "#64748B", "description": "Inactive items" },
+    { "name": "Border/Default",     "color": "#FFFFFF14", "description": "Card border 8% white" },
+    { "name": "Border/Focus",       "color": "#0055A480", "description": "Focus border 50% primary" },
+    { "name": "Surface/Card",       "color": "#FFFFFF0D", "description": "Card surface 5% white" },
+    { "name": "Surface/Hover",      "color": "#FFFFFF1A", "description": "Hover surface 10% white" },
+    { "name": "Surface/Nav",        "color": "#0A1128CC", "description": "Nav sidebar 80% navy" }
+  ],
+  "textStyles": [
+    { "name": "Heading/H1",  "fontFamily": "Inter", "fontSize": 36, "fontWeight": 700, "lineHeight": 40, "description": "Page title" },
+    { "name": "Heading/H2",  "fontFamily": "Inter", "fontSize": 24, "fontWeight": 600, "lineHeight": 32, "description": "Section heading" },
+    { "name": "Heading/H3",  "fontFamily": "Inter", "fontSize": 18, "fontWeight": 500, "lineHeight": 28, "description": "Card title" },
+    { "name": "Body/Base",   "fontFamily": "Inter", "fontSize": 16, "fontWeight": 400, "lineHeight": 24, "description": "Body text" },
+    { "name": "Body/Small",  "fontFamily": "Inter", "fontSize": 14, "fontWeight": 500, "lineHeight": 20, "description": "Labels, secondary" },
+    { "name": "Body/XSmall", "fontFamily": "Inter", "fontSize": 12, "fontWeight": 400, "lineHeight": 16, "description": "Captions, metadata" },
+    { "name": "Label/Badge", "fontFamily": "Inter", "fontSize": 11, "fontWeight": 600, "lineHeight": 16, "description": "Badges, tags" }
+  ],
+  "effectStyles": [
+    { "name": "Elevation/Card",   "type": "LAYER_BLUR", "radius": 16, "description": "Base card blur" },
+    { "name": "Elevation/Hover",  "type": "LAYER_BLUR", "radius": 20, "description": "Hover/active blur" },
+    { "name": "Elevation/Modal",  "type": "LAYER_BLUR", "radius": 24, "description": "Modal/dropdown blur" },
+    { "name": "Elevation/Nav",    "type": "LAYER_BLUR", "radius": 30, "description": "Nav sidebar blur" }
+  ]
+}
