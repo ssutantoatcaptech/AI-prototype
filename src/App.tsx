@@ -5,6 +5,8 @@ import Tables from './pages/Tables'
 import QueryEditor from './pages/QueryEditor'
 import ActivityLogPage from './pages/ActivityLog'
 import FigmaFiles from './pages/FigmaFiles'
+import ComponentDemo from './pages/ComponentDemo'
+import MoOPortal from './pages/MoOPortal'
 import { type Page } from './types'
 import { useApi } from './hooks/useApi'
 import { type TableInfo } from './types'
@@ -20,6 +22,8 @@ export default function App() {
       case 'query': return <QueryEditor />
       case 'activity': return <ActivityLogPage />
       case 'figma': return <FigmaFiles />
+      case 'components': return <ComponentDemo />
+      case 'moo': return <MoOPortal />
     }
   }
 

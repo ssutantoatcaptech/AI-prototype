@@ -12,6 +12,8 @@ const navItems: { id: Page; label: string; icon: string }[] = [
   { id: 'query', label: 'Query Editor', icon: '❯_' },
   { id: 'activity', label: 'Activity Log', icon: '≡' },
   { id: 'figma', label: 'Figma Files', icon: '✦' },
+  { id: 'components', label: 'Components', icon: '⬡' },
+  { id: 'moo', label: 'MoO Portal', icon: 'M' },
 ]
 
 export default function Sidebar({ activePage, onNavigate, tableCount }: Props) {

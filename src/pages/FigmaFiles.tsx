@@ -6,6 +6,8 @@ const API_BASE = 'http://localhost:3001'
 export default function FigmaFiles() {
   const [token, setToken] = useState('')
   const [teamId, setTeamId] = useState('')
+  const [projectId, setProjectId] = useState('')
+  const [mode, setMode] = useState<'team' | 'project'>('project')
   const [projects, setProjects] = useState<FigmaProject[]>([])
   const [selectedProject, setSelectedProject] = useState<FigmaProject | null>(null)
   const [files, setFiles] = useState<FigmaFile[]>([])
@@ -31,6 +33,26 @@ export default function FigmaFiles() {
       setError(err instanceof Error ? err.message : 'Unknown error')
     } finally {
       setLoadingProjects(false)
+    }
+  }
+
+  async function fetchFilesByProjectId() {
+    if (!token || !projectId) return
+    setError(null)
+    setFiles([])
+    setSelectedProject({ id: projectId, name: `Project ${projectId}` })
+    setLoadingFiles(true)
+    try {
+      const res = await fetch(`${API_BASE}/api/figma/projects/${projectId}/files`, {
+        headers: { 'X-Figma-Token': token },
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || `Error ${res.status}`)
+      setFiles(data.files || [])
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error')
+    } finally {
+      setLoadingFiles(false)
     }
   }
 
@@ -62,7 +84,19 @@ export default function FigmaFiles() {
 
       {/* Credentials */}
       <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
-        <h2 className="text-sm font-medium text-gray-300">Connection</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-medium text-gray-300">Connection</h2>
+          <div className="flex text-xs rounded-lg overflow-hidden border border-gray-700">
+            <button
+              onClick={() => setMode('project')}
+              className={`px-3 py-1.5 transition-colors ${mode === 'project' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'}`}
+            >By Project ID</button>
+            <button
+              onClick={() => setMode('team')}
+              className={`px-3 py-1.5 transition-colors ${mode === 'team' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'}`}
+            >By Team ID</button>
+          </div>
+        </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
             <label className="block text-xs text-gray-500 mb-1">Personal Access Token</label>
@@ -75,23 +109,48 @@ export default function FigmaFiles() {
             />
           </div>
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Team ID</label>
-            <input
-              type="text"
-              value={teamId}
-              onChange={e => setTeamId(e.target.value)}
-              placeholder="123456789"
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500"
-            />
+            {mode === 'project' ? (
+              <>
+                <label className="block text-xs text-gray-500 mb-1">Project ID <span className="text-gray-600">(from figma.com/files/project/XXXXXX)</span></label>
+                <input
+                  type="text"
+                  value={projectId}
+                  onChange={e => setProjectId(e.target.value)}
+                  placeholder="514415807"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500"
+                />
+              </>
+            ) : (
+              <>
+                <label className="block text-xs text-gray-500 mb-1">Team ID</label>
+                <input
+                  type="text"
+                  value={teamId}
+                  onChange={e => setTeamId(e.target.value)}
+                  placeholder="123456789"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500"
+                />
+              </>
+            )}
           </div>
         </div>
-        <button
-          onClick={fetchProjects}
-          disabled={!token || !teamId || loadingProjects}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm rounded-lg transition-colors"
-        >
-          {loadingProjects ? 'Loading…' : 'List Projects'}
-        </button>
+        {mode === 'project' ? (
+          <button
+            onClick={fetchFilesByProjectId}
+            disabled={!token || !projectId || loadingFiles}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm rounded-lg transition-colors"
+          >
+            {loadingFiles ? 'Loading…' : 'List Files'}
+          </button>
+        ) : (
+          <button
+            onClick={fetchProjects}
+            disabled={!token || !teamId || loadingProjects}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm rounded-lg transition-colors"
+          >
+            {loadingProjects ? 'Loading…' : 'List Projects'}
+          </button>
+        )}
       </div>
 
       {error && (
