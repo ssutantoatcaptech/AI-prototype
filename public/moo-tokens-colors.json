@@ -1,0 +1,30 @@
+{
+  "color": {
+    "primary": {
+      "main":     { "$value": "#0055A4", "$type": "color", "$description": "Primary brand blue" }
+    },
+    "background": {
+      "navy":     { "$value": "#0A1128", "$type": "color", "$description": "Main app shell" },
+      "slate":    { "$value": "#101820", "$type": "color", "$description": "Main content area" }
+    },
+    "text": {
+      "primary":  { "$value": "#F8FAFC", "$type": "color", "$description": "Headings and body" },
+      "secondary":{ "$value": "#64748B", "$type": "color", "$description": "Labels, captions" }
+    },
+    "status": {
+      "success":  { "$value": "#108981", "$type": "color", "$description": "Active, approved" },
+      "warning":  { "$value": "#F59E0B", "$type": "color", "$description": "Pending, required" },
+      "error":    { "$value": "#EF4444", "$type": "color", "$description": "Denied, errors" },
+      "inactive": { "$value": "#64748B", "$type": "color", "$description": "Inactive items" }
+    },
+    "border": {
+      "default":  { "$value": "#FFFFFF", "$type": "color", "$description": "Card border — set opacity to 8% in Figma" },
+      "focus":    { "$value": "#0055A4", "$type": "color", "$description": "Focus border — set opacity to 50% in Figma" }
+    },
+    "surface": {
+      "card":     { "$value": "#FFFFFF", "$type": "color", "$description": "Card surface — set opacity to 5% in Figma" },
+      "hover":    { "$value": "#FFFFFF", "$type": "color", "$description": "Hover surface — set opacity to 10% in Figma" },
+      "nav":      { "$value": "#0A1128", "$type": "color", "$description": "Nav sidebar — set opacity to 80% in Figma" }
+    }
+  }
+}

@@ -18,13 +18,13 @@
       "inactive": { "$value": "#64748B", "$type": "color", "$description": "Inactive items" }
     },
     "border": {
-      "default":  { "$value": "#FFFFFF14", "$type": "color", "$description": "Card border (8% white)" },
-      "focus":    { "$value": "#0055A480", "$type": "color", "$description": "Focus border (50% primary)" }
+      "default":  { "$value": "#FFFFFF", "$type": "color", "$description": "Card border — set opacity to 8% in Figma" },
+      "focus":    { "$value": "#0055A4", "$type": "color", "$description": "Focus border — set opacity to 50% in Figma" }
     },
     "surface": {
-      "card":     { "$value": "#FFFFFF0D", "$type": "color", "$description": "Card surface (5% white)" },
-      "hover":    { "$value": "#FFFFFF1A", "$type": "color", "$description": "Hover surface (10% white)" },
-      "nav":      { "$value": "#0A1128CC", "$type": "color", "$description": "Nav sidebar (80% navy)" }
+      "card":     { "$value": "#FFFFFF", "$type": "color", "$description": "Card surface — set opacity to 5% in Figma" },
+      "hover":    { "$value": "#FFFFFF", "$type": "color", "$description": "Hover surface — set opacity to 10% in Figma" },
+      "nav":      { "$value": "#0A1128", "$type": "color", "$description": "Nav sidebar — set opacity to 80% in Figma" }
     }
   },
   "typography": {

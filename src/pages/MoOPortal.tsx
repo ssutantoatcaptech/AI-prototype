@@ -365,7 +365,8 @@ function FigmaSyncPanel() {
             </div>
           )}
           <div style={{ display: 'flex', gap: 6 }}>
-            <a href="/moo-tokens.json" download style={{ flex: 1, textAlign: 'center', fontSize: 10, color: tokens.text.secondary, textDecoration: 'none', padding: '5px', background: tokens.surface.card, border: `1px solid ${tokens.border}`, borderRadius: 6 }}>↓ Tokens</a>
+            <a href="/moo-tokens.json" download style={{ flex: 1, textAlign: 'center', fontSize: 10, color: tokens.text.secondary, textDecoration: 'none', padding: '5px', background: tokens.surface.card, border: `1px solid ${tokens.border}`, borderRadius: 6 }}>↓ All Tokens</a>
+            <a href="/moo-tokens-colors.json" download style={{ flex: 1, textAlign: 'center', fontSize: 10, color: tokens.text.secondary, textDecoration: 'none', padding: '5px', background: tokens.surface.card, border: `1px solid ${tokens.border}`, borderRadius: 6 }}>↓ Colors</a>
             <a href="/moo-styles.json" download style={{ flex: 1, textAlign: 'center', fontSize: 10, color: tokens.text.secondary, textDecoration: 'none', padding: '5px', background: tokens.surface.card, border: `1px solid ${tokens.border}`, borderRadius: 6 }}>↓ Styles</a>
           </div>
         </div>
