@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { WireframeBrand, WireframeSteps, WireframeFooter, WireframeButton } from '../../components/WireframeCard'
+import { api } from '../../lib/api'
+import type { Member } from '../../lib/api'
 import type { NavProps, RegistrationData } from '../../types'
 
 interface Props extends NavProps {
   data: RegistrationData
+  onLogin: (token: string, member: Member) => void
 }
 
 function Section({ title, onEdit, children }: { title: string; onEdit: () => void; children: React.ReactNode }) {
@@ -37,13 +40,42 @@ const agreements = [
   { key: 'dataSharing', label: 'Data Sharing Authorization', sub: 'I authorize sharing of my health benefits data as needed' },
 ] as const
 
-export default function ReviewComplete({ navigate, data }: Props) {
+export default function ReviewComplete({ navigate, data, onLogin }: Props) {
   const [checked, setChecked] = useState<Record<string, boolean>>({})
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   const allChecked = agreements.every(a => checked[a.key])
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    navigate('register-success')
+    setError('')
+    setLoading(true)
+    try {
+      await api.register({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+        employerName: data.employerName,
+        employeeId: data.employeeId,
+        dateOfBirth: data.dateOfBirth,
+        last4SSN: data.last4SSN,
+        mfaEnabled: data.mfaEnabled,
+        mfaMethod: data.mfaMethod,
+        phoneNumber: data.phoneNumber,
+        backupEmail: data.backupEmail,
+      })
+      // Auto-login after registration (MFA not required for new accounts)
+      const loginRes = await api.login(data.email, data.password)
+      if (loginRes.token && loginRes.member) {
+        onLogin(loginRes.token, loginRes.member)
+      }
+      navigate('register-success')
+    } catch (err: any) {
+      setError(err.message || 'Registration failed. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -98,7 +130,12 @@ export default function ReviewComplete({ navigate, data }: Props) {
               </div>
             </div>
 
-            <WireframeButton type="submit" disabled={!allChecked}>Complete Registration →</WireframeButton>
+            {error && (
+              <div className="px-3 py-2 border border-red-300 bg-red-50 rounded-sm text-sm text-red-700">{error}</div>
+            )}
+            <WireframeButton type="submit" disabled={!allChecked || loading}>
+              {loading ? 'Creating account…' : 'Complete Registration →'}
+            </WireframeButton>
             <button
               type="button"
               onClick={() => navigate('register-secure')}

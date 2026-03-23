@@ -1,25 +1,57 @@
 import { useState } from 'react'
+import { api } from '../lib/api'
+import type { Member } from '../lib/api'
 import type { NavProps } from '../types'
+
+interface Props extends NavProps {
+  onLogin: (token: string, member: Member) => void
+  memberId: number | null
+}
 
 type Method = 'sms' | 'email' | 'app'
 
-export default function TwoFactor({ navigate }: NavProps) {
+export default function TwoFactor({ navigate, onLogin, memberId }: Props) {
   const [method, setMethod] = useState<Method>('sms')
   const [code, setCode] = useState('')
   const [sent, setSent] = useState(false)
+  const [demoCode, setDemoCode] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  function handleSend() { setSent(true) }
+  async function handleSend() {
+    if (!memberId) return
+    setError('')
+    setLoading(true)
+    try {
+      const res = await api.send2FA(memberId)
+      setSent(true)
+      setDemoCode(res.demoCode) // Show code for demo purposes
+    } catch (err: any) {
+      setError(err.message || 'Failed to send code')
+    } finally {
+      setLoading(false)
+    }
+  }
 
-  function handleVerify(e: React.FormEvent) {
+  async function handleVerify(e: React.FormEvent) {
     e.preventDefault()
-    navigate('dashboard')
+    if (!memberId) return
+    setError('')
+    setLoading(true)
+    try {
+      const res = await api.verify2FA(memberId, code)
+      onLogin(res.token, res.member)
+    } catch (err: any) {
+      setError(err.message || 'Invalid or expired code')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-[360px] bg-white border border-gray-300 rounded-sm">
 
-        {/* Brand bar */}
         <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-gray-200">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 border-2 border-gray-800 rounded-sm flex items-center justify-center flex-shrink-0">
@@ -29,66 +61,52 @@ export default function TwoFactor({ navigate }: NavProps) {
             </div>
             <span className="text-sm font-semibold text-gray-800">Member Portal</span>
           </div>
-          <button
-            onClick={() => navigate('login')}
-            className="text-xs text-gray-500 hover:text-gray-800 flex items-center gap-1"
-          >
-            ← Sign In
-          </button>
+          <button onClick={() => navigate('login')} className="text-xs text-gray-500 hover:text-gray-800">← Sign In</button>
         </div>
 
         <div className="px-5 py-6">
           <h1 className="text-[22px] font-bold text-gray-900 mb-1">Two-Factor Authentication</h1>
           <p className="text-sm text-gray-500 mb-5">Verify your identity to continue</p>
 
-          {/* Method tabs */}
           <div className="flex border border-gray-400 rounded-sm overflow-hidden mb-5">
             {([
               { id: 'sms' as Method, label: 'SMS' },
               { id: 'email' as Method, label: 'Email' },
               { id: 'app' as Method, label: 'Auth App' },
             ]).map(m => (
-              <button
-                key={m.id}
-                onClick={() => { setMethod(m.id); setSent(false); setCode('') }}
+              <button key={m.id}
+                onClick={() => { setMethod(m.id); setSent(false); setCode(''); setError('') }}
                 className={`flex-1 py-2 text-xs font-medium border-r last:border-r-0 border-gray-400 transition-colors ${
                   method === m.id ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'
-                }`}
-              >
+                }`}>
                 {m.label}
               </button>
             ))}
           </div>
 
+          {error && (
+            <div className="mb-4 px-3 py-2 border border-red-300 bg-red-50 rounded-sm text-sm text-red-700">{error}</div>
+          )}
+
           {!sent ? (
             <div className="space-y-4">
-              {/* Description */}
-              <div className="bg-gray-50 border border-gray-200 rounded-sm p-3 text-xs text-gray-600 space-y-1">
+              <div className="bg-gray-50 border border-gray-200 rounded-sm p-3 text-xs text-gray-600">
                 {method === 'sms' && <p>A verification code will be sent to your mobile number on file.</p>}
                 {method === 'email' && <p>A verification code will be sent to your email address on file.</p>}
                 {method === 'app' && <p>Open your authentication app and enter the 6-digit code shown.</p>}
               </div>
-
-              {method !== 'app' && (
-                <button
-                  onClick={handleSend}
-                  className="w-full py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-sm hover:bg-black transition-colors"
-                >
-                  Send Verification Code
-                </button>
-              )}
-              {method === 'app' && (
-                <button
-                  onClick={handleSend}
-                  className="w-full py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-sm hover:bg-black transition-colors"
-                >
-                  Enter Code
-                </button>
-              )}
+              <button onClick={method === 'app' ? () => setSent(true) : handleSend} disabled={loading}
+                className="w-full py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-sm hover:bg-black transition-colors disabled:opacity-50">
+                {loading ? 'Sending…' : method === 'app' ? 'Enter Code' : 'Send Verification Code'}
+              </button>
             </div>
           ) : (
             <form onSubmit={handleVerify} className="space-y-4">
-              {/* Code input */}
+              {demoCode && (
+                <div className="px-3 py-2 border border-blue-200 bg-blue-50 rounded-sm text-xs text-blue-700">
+                  <strong>Demo mode:</strong> your code is <span className="font-mono font-bold">{demoCode}</span>
+                </div>
+              )}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Verification Code</label>
                 <input
@@ -98,32 +116,21 @@ export default function TwoFactor({ navigate }: NavProps) {
                   placeholder="123456"
                   value={code}
                   onChange={e => setCode(e.target.value.replace(/\D/g, ''))}
-                  className="w-full px-3 py-3 text-center text-xl tracking-[0.5em] font-mono border border-gray-400 rounded-sm bg-white focus:outline-none focus:border-gray-800"
+                  className="w-full px-3 py-3 text-center text-xl tracking-[0.5em] font-mono border border-gray-400 rounded-sm focus:outline-none focus:border-gray-800"
                   required
                 />
-                <p className="text-xs text-gray-400 mt-1 text-center">Enter the 6-digit code</p>
               </div>
-
-              <button
-                type="submit"
-                className="w-full py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-sm hover:bg-black transition-colors"
-              >
-                Verify and Continue →
+              <button type="submit" disabled={loading || code.length !== 6}
+                className="w-full py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-sm hover:bg-black transition-colors disabled:opacity-50">
+                {loading ? 'Verifying…' : 'Verify and Continue →'}
               </button>
-
               <div className="flex items-center justify-between text-xs text-gray-500">
-                <button type="button" onClick={() => setSent(false)} className="hover:text-gray-800 underline">
-                  Resend code
-                </button>
-                <span className="text-gray-300">|</span>
-                <button type="button" className="hover:text-gray-800 underline">
-                  Get verification link
-                </button>
+                <button type="button" onClick={() => { setSent(false); setCode(''); setDemoCode('') }}
+                  className="hover:text-gray-800 underline">Resend code</button>
               </div>
             </form>
           )}
 
-          {/* Help */}
           <div className="mt-6 pt-4 border-t border-gray-200">
             <p className="text-xs font-semibold text-gray-600 mb-2">Having trouble?</p>
             <ul className="space-y-1 text-xs text-gray-500 list-disc list-inside">
@@ -135,7 +142,6 @@ export default function TwoFactor({ navigate }: NavProps) {
           </div>
         </div>
 
-        {/* Footer */}
         <div className="px-5 py-3 border-t border-gray-200 flex justify-center gap-4 text-xs text-gray-400">
           <a href="#" className="hover:text-gray-600">Privacy Policy</a>
           <span>·</span>
@@ -144,7 +150,6 @@ export default function TwoFactor({ navigate }: NavProps) {
           <a href="#" className="hover:text-gray-600">Accessibility</a>
         </div>
       </div>
-
       <p className="mt-4 text-xs text-gray-400">© 2025 Member Benefits Portal</p>
     </div>
   )

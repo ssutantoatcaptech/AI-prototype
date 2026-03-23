@@ -1,7 +1,9 @@
 import { WireframeBrand, WireframeFooter, WireframeButton } from '../../components/WireframeCard'
-import type { NavProps } from '../../types'
+import type { NavProps, Member } from '../../types'
 
-export default function AccountCreated({ navigate }: NavProps) {
+interface Props extends NavProps { member: Member | null }
+
+export default function AccountCreated({ navigate, member }: Props) {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-[380px] bg-white border border-gray-300 rounded-sm">
@@ -15,7 +17,9 @@ export default function AccountCreated({ navigate }: NavProps) {
             </svg>
           </div>
 
-          <h1 className="text-[20px] font-bold text-gray-900 mb-2">Account Created Successfully</h1>
+          <h1 className="text-[20px] font-bold text-gray-900 mb-2">
+            Account Created Successfully{member ? `, ${member.firstName}` : ''}!
+          </h1>
           <p className="text-sm text-gray-500 mb-6">
             Your member account is ready. You can now access your benefits, view coverage details, and manage your account.
           </p>

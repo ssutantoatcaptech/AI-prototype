@@ -1,8 +1,9 @@
+import type { Member } from '../lib/api'
+
 export type View =
   | 'login'
   | 'forgot-password'
   | 'two-factor'
-  | 'check-email'
   | 'register-verify'
   | 'register-login'
   | 'register-secure'
@@ -16,6 +17,10 @@ export type View =
 
 export interface NavProps {
   navigate: (view: View) => void
+}
+
+export interface AuthNavProps extends NavProps {
+  onLogin: (token: string, member: Member) => void
 }
 
 export interface RegistrationData {
@@ -32,3 +37,5 @@ export interface RegistrationData {
   phoneNumber: string
   backupEmail: string
 }
+
+export type { Member }

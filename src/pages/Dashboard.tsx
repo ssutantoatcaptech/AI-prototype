@@ -1,6 +1,8 @@
 import Button from '../components/Button'
 import Sidebar from '../components/Sidebar'
-import type { NavProps } from '../types'
+import type { NavProps, Member } from '../types'
+
+interface Props extends NavProps { member: Member | null; onLogout: () => void }
 
 const actions = [
   { label: 'Update My Preferences', done: false },
@@ -14,8 +16,9 @@ const benefits = [
   { name: 'Vision', plan: 'Vision Basic', status: 'Active', deductible: '$0', spent: '$0' },
 ]
 
-export default function Dashboard({ navigate }: NavProps) {
+export default function Dashboard({ navigate, member, onLogout }: Props) {
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+  const firstName = member?.firstName ?? 'Member'
 
   return (
     <div className="flex min-h-screen bg-slate-100">
@@ -27,13 +30,11 @@ export default function Dashboard({ navigate }: NavProps) {
           {/* Header */}
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Welcome, Sarah</h1>
+              <h1 className="text-2xl font-bold text-gray-900">Welcome, {firstName}</h1>
               <p className="text-sm text-gray-500 mt-0.5">{today}</p>
             </div>
-            <button className="text-sm text-gray-500 hover:text-black flex items-center gap-1">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
+            <button onClick={onLogout} className="text-xs text-gray-500 hover:text-black border border-gray-300 rounded px-2 py-1">
+              Sign Out
             </button>
           </div>
 
@@ -44,7 +45,7 @@ export default function Dashboard({ navigate }: NavProps) {
               {/* Welcome notification */}
               <div className="bg-black text-white rounded-xl p-4 flex items-start justify-between">
                 <div>
-                  <p className="font-semibold text-sm">Welcome to Benefits Portal, Sarah 👋</p>
+                  <p className="font-semibold text-sm">Welcome to Benefits Portal, {firstName} 👋</p>
                   <p className="text-xs text-gray-300 mt-1">Complete your profile setup to access all features.</p>
                 </div>
                 <button className="text-gray-400 hover:text-white text-lg leading-none">×</button>
