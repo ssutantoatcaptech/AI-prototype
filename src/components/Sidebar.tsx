@@ -14,6 +14,8 @@ const navItems: { id: Page; label: string; icon: string }[] = [
   { id: 'figma', label: 'Figma Files', icon: '✦' },
   { id: 'components', label: 'Components', icon: '⬡' },
   { id: 'moo', label: 'MoO Portal', icon: 'M' },
+  { id: 'auth', label: 'Auth Wireframes', icon: '🔑' },
+  { id: 'leave', label: 'Leave Wizard', icon: '📋' },
 ]
 
 export default function Sidebar({ activePage, onNavigate, tableCount }: Props) {

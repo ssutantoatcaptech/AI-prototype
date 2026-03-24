@@ -44,7 +44,7 @@ export interface ActivityLog {
   created_at: string
 }
 
-export type Page = 'overview' | 'tables' | 'query' | 'activity' | 'figma' | 'components' | 'moo'
+export type Page = 'overview' | 'tables' | 'query' | 'activity' | 'figma' | 'components' | 'moo' | 'auth' | 'leave'
 
 export interface FigmaProject {
   id: string

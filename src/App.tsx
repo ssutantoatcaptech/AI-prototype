@@ -7,6 +7,8 @@ import ActivityLogPage from './pages/ActivityLog'
 import FigmaFiles from './pages/FigmaFiles'
 import ComponentDemo from './pages/ComponentDemo'
 import MoOPortal from './pages/MoOPortal'
+import AuthWireframes from './pages/AuthWireframes'
+import LeaveWizard from './pages/LeaveWizard'
 import { type Page } from './types'
 import { useApi } from './hooks/useApi'
 import { type TableInfo } from './types'
@@ -24,7 +26,16 @@ export default function App() {
       case 'figma': return <FigmaFiles />
       case 'components': return <ComponentDemo />
       case 'moo': return <MoOPortal />
+      case 'auth': return <AuthWireframes />
     }
+  }
+
+  if (page === 'auth') {
+    return <AuthWireframes />
+  }
+
+  if (page === 'leave') {
+    return <LeaveWizard onBack={() => setPage('overview')} />
   }
 
   if (page === 'moo') {
